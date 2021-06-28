@@ -5,7 +5,7 @@ install_requirements:
 	@pip install -r requirements.txt
 
 check_code:
-	@flake8 scripts/* 3D_houses/*.py --ignore E501,W503,E722
+	@flake8 scripts/* becode3d/*.py
 
 test:
 	@coverage run -m pytest tests/*.py
@@ -16,8 +16,8 @@ clean:
 	@rm -f .coverage
 	@rm -fr */__pycache__ */*.pyc __pycache__
 	@rm -fr build dist
-	@rm -fr 3D_houses-*.dist-info
-	@rm -fr 3D_houses.egg-info
+	@rm -fr houses3d-*.dist-info
+	@rm -fr houses3d.egg-info
 
 install:
 	@pip install . -U
