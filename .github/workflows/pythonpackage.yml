@@ -1,0 +1,26 @@
+name: test python code
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: MAKE CLEAN
+      run:  make clean
+    - name: MAKE INSTALL
+      run:  make install
+    - name: MAKE TEST
+      run:  make test
+    - name: MAKE CHECK_CODE
+      run:  make check_code
+    strategy:
+      matrix:
+        python-version: [3.8]
