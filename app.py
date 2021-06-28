@@ -7,7 +7,7 @@ import pandas as pd
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'future_of_living'
+app.config['SECRET_KEY'] = '3d_houses_very_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -16,9 +16,6 @@ db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-# data = pd.read_csv(
-#     'gs://future_of_living_storage_beatfr/data/_csv/predictions.csv')
 
 
 class User(UserMixin, db.Model):
@@ -51,51 +48,6 @@ def display_map():
     return render_template('display_map.html', title='Display Map', 
         address=['Pont Roi Baudoin', '6000 Charleroi'], 
         h2={'Area': '2128m²', 'Latitude': '12345', 'Longitude': '123456'})
-# @app.route('/ccn', methods=['POST'])
-# @app.route('/ccn/<searchterm>')
-# @login_required
-# def ccnpage(searchterm=''):
-#     if request.method == 'POST':
-#         searchterm = request.form.get('searchterm')
-#     json = updateccn(searchterm)
-#     if json['found'] == False:
-#         flash('No results found, please try again.')
-#         return redirect('/start')
-#     return render_template('ccn.html',
-#                            h1=json['h1'],
-#                            h2=json['h2'],
-#                            title='CCN')
-
-
-# @app.route('/updateccn/<searchterm>')
-# @login_required
-# def updateccn(searchterm):
-#     try:
-#         searchterm = int(searchterm)
-#     except ValueError:
-#         searchterm = searchterm
-
-#     if data[data['community_id'] == searchterm].shape[0] != 0:
-#         city = data[data['community_id'] == searchterm]
-#     elif data[data['zip_code'] == searchterm].shape[0] != 0:
-#         city = data[data['zip_code'] == searchterm]
-#     elif data[data['community_name'] == searchterm].shape[0] != 0:
-#         city = data[data['community_name'] == searchterm]
-#     else:
-#         return {'found': False}
-#     h1 = {'ID': city['community_id'].item(),
-#           'Name': city['community_name'].item(),
-#           'ZIP': city['zip_code'].item()}
-#     h2 = {'Projected yearly recoup':
-#           f"{round(city['KPI'].item()*100, 2)} %",
-#           'Estimated Rent Prices':
-#           f"{round(city['average_overall_sqm_price'].item(), 2)} € / m²",
-#           'Avg Property Price':
-#           f"{round(city['property_land_price_m2'].item(), 2)} € / m²",
-#           'Distance from Nearest Capital':
-#           f"{int(city['travel_distance_to_hub_in_km'].item())} km / {int(city['travel_duration_to_hub_in_min'].item())} min"}
-#     order = ['Projected yearly recoup', 'Estimated Rent Prices', 'Avg Property Price', 'Distance from Nearest Capital']
-#     return {'found': True, 'h1': h1, 'h2': h2, 'order':order}
 
 
 @app.route('/login', methods=['GET', 'POST'])
