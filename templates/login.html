@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+  {% block body %}
+    <div class="bodycenter text-center">
+    <main class="form-signin">
+      <form method="POST" action="/login">
+        <img class="mb-4" src="{{ url_for('static', filename='becode-round.jpeg') }}" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 fw-normal">Please login to this secure system!</h1>
+        <h1 class="h3 mb-3 fw-normal">The password is confidential!</h1>
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="alert alert-danger">
+                            {{ messages[0] }}
+                        </div>
+                    {% endif %}
+                    {% endwith %}
+        <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <div class="checkbox mb-3">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="w-100 btn btn-lg btn-ghost" type="submit">Sign in</button>
+        <p class="mt-4 mb-3 text-muted">Made with &hearts; by Sergei, Samuel & Olivier @BeCode.</p>
+      </form>
+    </main>
+    </div>
+  {% endblock body %}

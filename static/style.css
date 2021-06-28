@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap');
+
+html, body {
+  background-color: #f5f5f5;
+  font-family: 'Quicksand', sans-serif;
+  height: 100%;
+}
+
+.navbar {
+  justify-content: space-between;
+  background: white;
+  position: fixed;
+  width: 100%;
+  top: 0;
+}
+.navbar .navbar-collapse {
+  flex-grow: 0;
+}
+
+.navbar .navbar-brand img {
+  height: 40px;
+}
+
+.navbar .navbar-nav {
+  margin-top: 8px;
+}
+
+.navbar .search-container {
+  float: right;
+  border: #ddd;
+  border-radius: 2px, 0px, 0px, 2px;
+}
+
+.navbar input[type=text] {
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 17px;
+  border: 1px solid #ddd;
+}
+
+.navbar .search-container button {
+  float: right;
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-right: 16px;
+  background: #ddd;
+  font-size: 17px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.navbar .search-container button:hover {
+  background: #ccc;
+}
+
+.bodycontainer {
+  border: lightgray 3px solid;
+  padding-top: 66px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  height: 100%;
+}
+
+/*mapboxcontainer*/
+.bodycontainer > div:last-of-type {
+  flex-grow: 1;
+  min-width: 400px;
+  display: flex;
+  align-items: stretch;
+}
+
+.bodydata {
+  width:325px;
+  padding: 10px;
+  height: 100%;
+  overflow: auto;
+}
+
+.top_bodydata {
+  width:475px;
+  padding: 10px;
+  height: 100%;
+  overflow: auto;
+}
+
+#h1 h1{
+  text-align: center;
+  font-weight: bold;
+  color:#9E005D;
+}
+
+#h1 p {
+  text-align: center;
+  font-size: 25px;
+}
+
+.avatar {
+  width: 45px;
+  border-radius: 50%;
+  border: black 1px solid
+}
+
+
+.bodycenter {
+  display: flex;
+  align-items: center;
+  padding-top: 100px;
+  padding-bottom: 40px;
+}
+
+.top10 {
+  display: flex;
+  align-items: center;
+  padding-top: 100px;
+  padding-bottom: 40px;
+  margin-left: 15px;
+
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 450px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.btn-ghost {
+  color: #4A4A4A;
+  border: 1px solid #4A4A4A;
+  padding: 8px 24px;
+  border-radius: 50px;
+  font-weight: lighter;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.btn-ghost:hover {
+  opacity: 1;
+}
+
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.card {
+  border-radius: 4px;
+  padding: 0;
+  box-shadow: 5px 5px 5px #ddd ;
+  color: #666;
+  border: 1px #ddd solid;
+  width:250px;
+  height:120px;
+  margin:10px;
+  justify-content: center;
+
+}
+.card_upper {
+  height: 35px;
+  padding-left: 15px;
+  color: #666;
+  border-bottom: 1px solid #ddd
+
+}
+.card_lower {
+  height:65px;
+  padding-top: 18px;
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
+}
