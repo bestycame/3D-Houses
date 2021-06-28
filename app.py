@@ -45,7 +45,12 @@ def index():
 def start():
     return render_template('start.html', title='Start')
 
-
+@app.route('/display_map')
+@login_required
+def display_map():
+    return render_template('display_map.html', title='Display Map', 
+        address=['Pont Roi Baudoin', '6000 Charleroi'], 
+        h2={'Area': '2128m²', 'Latitude': '12345', 'Longitude': '123456'})
 # @app.route('/ccn', methods=['POST'])
 # @app.route('/ccn/<searchterm>')
 # @login_required

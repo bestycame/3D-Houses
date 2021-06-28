@@ -1,12 +1,12 @@
 <div class="navbar navbar-expand-sm navbar-light navbar align-items-center">
-  <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='becound-large.png') }}" /></a>
+  <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='becode-large.png') }}" /></a>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
   {% if title != 'Start' %}
   <div class="search-container">
   <form>
-      <input id=searchterm type="text" placeholder="Community Name of Zip" name="searchterm">
+      <input id=searchterm type="text" placeholder="Search an adress" name="searchterm">
       <button id="searchbox" type="submit"><i class="fa fa-search"></i></button>
     </form>
   </div>
@@ -15,7 +15,7 @@
     <ul class="navbar-nav mr-auto">
         <li class="nav-item"><a class="nav-link" href="/###">####</a></li>
         <li class="nav-item"><a class="nav-link" href="/logout">LogOut</a></li>
-        <li class="nav-item"><img class="avatar dropdown-toggle" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="https://avatars.githubusercontent.com/u/77148949?s=400&u=6b833f9fedaf2d330786bc74ba92f426715e9075&v=4" /></li>
+        <li class="nav-item"><img class="avatar dropdown-toggle" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="{{ url_for('static', filename='rabbit-avatar.jpg') }}" /></li>
       </ul>
   </div>
 </div>
