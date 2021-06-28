@@ -23,4 +23,4 @@ jobs:
       run:  make check_code
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.8, 3.9]
