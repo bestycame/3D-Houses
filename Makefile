@@ -5,7 +5,7 @@ install_requirements:
 	@pip install -r requirements.txt
 
 check_code:
-	@flake8 scripts/* houses3d/*.py
+	@flake8 scripts/* becode3d/*.py
 
 test:
 	@coverage run -m pytest tests/*.py
