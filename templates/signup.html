@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+  {% block body %}
+    <div class="bodycenter text-center">
+    <main class="form-signin">
+      <form method="POST" action="/signup">
+        <img class="mb-4" src="{{ url_for('static', filename='becode-round.png') }}" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 fw-normal">What would you like to search?</h1>
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="alert alert-danger">
+                            {{ messages[0] }}. Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+                        </div>
+                    {% endif %}
+                    {% endwith %}
+        <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <input type="username" name="username" id="inputusername" class="form-control" placeholder="username" required>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <button class="w-100 btn btn-lg btn-ghost" type="submit">Sign up</button>
+        <p class="mt-4 mb-3 text-muted">Made with &hearts; by Sergei, Samuel & Olivier @BeCode.</p>
+      </form>
+    </main>
+    </div>
+  {% endblock body %}

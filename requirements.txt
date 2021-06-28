@@ -1,0 +1,35 @@
+# packaging
+pip>=9
+setuptools>=26
+twine
+wheel>=0.29
+
+# data science
+numpy
+pandas
+
+# tests/linter
+coverage
+flake8
+pytest
+yapf
+pytest
+coverage
+
+# utilities
+six>=1.14
+joblib
+memoized-property
+termcolor
+python-dotenv
+
+# api
+fastapi
+uvicorn
+flask
+
+#flask
+flask
+flask_login
+flask_sqlalchemy
+gunicorn
