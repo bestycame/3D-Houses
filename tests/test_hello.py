@@ -1,7 +1,7 @@
-from becode3d import *
+from becode3d.hello import print_hello
 
-def hello_returns_correct_test():
-    assert hello() == 'Hello World'
+def test_hello_returns_correct_test():
+    assert print_hello() == 'Hello World'
 
-if __name__ == '__main__':
-    hello_returns_correct_test()
+def test_tests():
+    assert 'OK' is 'OK'
