@@ -4,4 +4,4 @@ def test_hello_returns_correct_test():
     assert print_hello() == 'Hello World'
 
 def test_tests():
-    assert 'OK' is 'OK'
+    assert 'OK' == 'OK'
