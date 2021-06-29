@@ -8,8 +8,8 @@ check_code:
 	@flake8 scripts/* becode3d/*.py
 
 test:
-	@coverage run -m pytest tests/*.py
-	@coverage report -m --omit="${VIRTUAL_ENV}/lib/python*"
+	@coverage run -m pytest tests/*.py --ignore=E501
+	@coverage report -m --include='./becode3d/*'
 
 clean:
 	@rm -f */version.txt
