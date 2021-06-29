@@ -11,6 +11,7 @@ test:
 	@coverage run -m pytest tests/*.py --ignore=E501
 	@coverage report -m --include='./becode3d/*'
 
+
 clean:
 	@rm -f */version.txt
 	@rm -f .coverage
