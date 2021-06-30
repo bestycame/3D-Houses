@@ -5,10 +5,10 @@ install_requirements:
 	@pip install -r requirements.txt
 
 check_code:
-	@flake8 scripts/* becode3d/*.py
+	@flake8 scripts/* becode3d/*.py --ignore=E501
 
 test:
-	@coverage run -m pytest tests/*.py --ignore=E501
+	@coverage run -m pytest tests/*.py
 	@coverage report -m --include='./becode3d/*'
 
 
