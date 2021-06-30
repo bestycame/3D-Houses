@@ -67,9 +67,10 @@ class Location:
                                  "zaxis": {'showspikes': False},
                                  "camera_eye": {"x": 0, "y": -0.5, "z": 0.5},
                                  "aspectratio": {"x": 1, "y": 1, "z": 0.1}})
-        #fig.write_html('./templates/map.html', full_html=False, include_plotlyjs='cdn')
+        # fig.write_html('./templates/map.html', full_html=False, include_plotlyjs='cdn')
         div = fig.to_html(full_html=False, include_plotlyjs='cdn')
         return div
+
 
 if __name__ == '__main__':
     instance = Location("Pont Roi Baudoin Charleroi", boundary=100)

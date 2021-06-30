@@ -4,6 +4,7 @@ from flask_login import login_user, logout_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import pandas as pd
+import os
 from becode3d.map_creation import Location
 
 app = Flask(__name__)
@@ -124,4 +125,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run()
+  port = int(os.environ.get('PORT', 5000))
+  app.run(host = '0.0.0.0', port = port)

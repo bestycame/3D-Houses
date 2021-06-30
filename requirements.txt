@@ -33,3 +33,12 @@ flask
 flask_login
 flask_sqlalchemy
 gunicorn
+
+pyproj
+werkzeug
+rasterio
+plotly
+fiona
+shapely
+matplotlib
+geopandas
