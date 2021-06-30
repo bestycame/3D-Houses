@@ -8,7 +8,7 @@ import geopandas as gpd
 import requests
 import json
 import plotly.express as px
-from variables import MAPBOX_KEY, DATAS
+from becode3d.variables import MAPBOX_KEY, DATAS
 
 
 def lambert_to_wgs(x_lambert, y_lambert):

@@ -1,5 +1,5 @@
-from functions import search_address_mapbox, is_in_bbox, subsetTif
-from variables import DATAS, BATI_3D
+from becode3d.functions import search_address_mapbox, is_in_bbox, subsetTif
+from becode3d.variables import DATAS, BATI_3D
 import rasterio
 import pandas as pd
 import plotly.graph_objects as go
@@ -67,11 +67,12 @@ class Location:
                                  "zaxis": {'showspikes': False},
                                  "camera_eye": {"x": 0, "y": -0.5, "z": 0.5},
                                  "aspectratio": {"x": 1, "y": 1, "z": 0.1}})
-        fig.write_html('./test.html', full_html=False, include_plotlyjs='cdn')
-
+        #fig.write_html('./templates/map.html', full_html=False, include_plotlyjs='cdn')
+        div = fig.to_html(full_html=False, include_plotlyjs='cdn')
+        return div
 
 if __name__ == '__main__':
-    instance = Location("Rue d'Abolens 23, 4250 Boëlhe", boundary=100)
+    instance = Location("Pont Roi Baudoin Charleroi", boundary=100)
     instance.find_files()
     instance.create_chm()
     instance.create_plotly_map()
