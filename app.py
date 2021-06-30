@@ -4,6 +4,7 @@ from flask_login import login_user, logout_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import pandas as pd
+from becode3d.map_creation import Location
 
 app = Flask(__name__)
 
@@ -48,6 +49,27 @@ def display_map():
     return render_template('display_map.html', title='Display Map', 
         address=['Pont Roi Baudoin', '6000 Charleroi'], 
         h2={'Area': '2128m²', 'Latitude': '12345', 'Longitude': '123456'})
+
+@app.route('/display_map', methods=['POST'])
+@app.route('/display_map/address=<searchterm>&boundary=<range_value>')
+@login_required
+def display(searchterm='', range_value=''):
+    json = {'found': True}
+    if request.method == 'POST':
+        searchterm = request.form.get('searchterm')
+        range_value = request.form.get('range_value')
+    
+    instance = Location(searchterm, int(range_value))
+    instance.find_files()
+    instance.create_chm()
+    html_map = instance.create_plotly_map()
+
+    if json['found'] == False:
+        flash('No results found, please try again.')
+        return redirect('/start')
+    return render_template('display_map.html', title='Display Map', 
+        address=[searchterm, range_value], 
+        h2={'Area': '2128m²', 'Latitude': '12345', 'Longitude': '123456'}, html_map=html_map)
 
 
 @app.route('/login', methods=['GET', 'POST'])

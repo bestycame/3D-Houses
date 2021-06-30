@@ -18,6 +18,6 @@
             {% endfor %}
         </div>
       </div>
-      {% include "map.html" %}
+      {{ html_map | safe }}
   </div>
   {% endblock body %}
