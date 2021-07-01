@@ -8,7 +8,8 @@ import geopandas as gpd
 import requests
 import json
 import plotly.express as px
-from becode3d.variables import MAPBOX_KEY, DATAS
+import os
+from becode3d.variables import DATAS  # MAPBOX_KEY
 
 
 def lambert_to_wgs(x_lambert, y_lambert):
@@ -39,7 +40,7 @@ def search_address(cp, rue, num, as_wgs=False, as_dict=False, boundary=False):
 
 def search_address_mapbox(address, as_wgs=False, as_dict=False, boundary=100):
     url = "https://api.mapbox.com/geocoding/v5/mapbox.places/{address}.json?types=address&access_token={key}"
-    r = requests.get(url.format(address=address, key=MAPBOX_KEY))
+    r = requests.get(url.format(address=address, key=os.environ['MAPBOX_KEY']))
     if r.status_code != 200:
         return 'NotFound'
     r = r.json()
