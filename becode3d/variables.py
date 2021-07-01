@@ -1,5 +1,3 @@
-MAPBOX_KEY = 'pk.eyJ1IjoiYmFjYXlhdzU1OSIsImEiOiJja2dtNTgyNW8wMWN2MnBzM2loNGt4NmlzIn0.3IYulU7qzfpq2Ms0aaYWMQ'
-
 DATAS = {'LGE': {'MNT': '/mnt/3D/RELIEF_WALLONIE_MNT_2013_2014_LIEGE.tif',
                  'MNS': '/mnt/3D/RELIEF_WALLONIE_MNS_2013_2014_LIEGE.tif'},
          'HAI': {'MNT': '/mnt/3D/RELIEF_WALLONIE_MNT_2013_2014_HAINAUT.tif',
