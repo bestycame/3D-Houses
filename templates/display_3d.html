@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+  {% block body %}
+    <div class="bodycontainer">
+      <div class=bodydata>
+          <div class="alert alert-warning text_center" id=alert style="display:none">
+              No Results found for your search!
+          </div>
+          <div id="h1">
+            <h1>{{ address['street'] }}</h1>
+            <p>{{ address['postal_code']}}  {{address['city_name']}}</p>
+          </div>
+          <div id="h2" class="cards">
+            {% for k, v in h2.items() %}
+              <div class="card" id="card">
+                <div class="card_upper">{{k}}</div>
+                <div class="card_lower">{{v}}</div>
+              </div>
+            {% endfor %}
+        </div>
+      </div>
+      <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+      <div>
+
+        <model-viewer id="pan-demo" auto-rotate camera-controls src="{{ url_for('static', filename='Becode_3D.glb') }}" alt="BeCode"></model-viewer>
+<script>
+(() => {
+  const modelViewer = document.querySelector('#pan-demo');
+  const tapDistance = 2;
+  let panning = false;
+  let panX, panY;
+  let startX, startY;
+  let lastX, lastY;
+  let metersPerPixel;
+
+  const startPan = () => {
+    const orbit = modelViewer.getCameraOrbit();
+    const {theta, phi, radius} = orbit;
+    const psi = theta - modelViewer.turntableRotation;
+    metersPerPixel = 0.75 * radius / modelViewer.getBoundingClientRect().height;
+    panX = [-Math.cos(psi), 0, Math.sin(psi)];
+    panY = [
+      -Math.cos(phi) * Math.sin(psi),
+      Math.sin(phi),
+      -Math.cos(phi) * Math.cos(psi)
+    ];
+    modelViewer.interactionPrompt = 'none';
+  };
+
+  const movePan = (thisX, thisY) => {
+    const dx = (thisX - lastX) * metersPerPixel;
+    const dy = (thisY - lastY) * metersPerPixel;
+    lastX = thisX;
+    lastY = thisY;
+
+    const target = modelViewer.getCameraTarget();
+    target.x += dx * panX[0] + dy * panY[0];
+    target.y += dx * panX[1] + dy * panY[1];
+    target.z += dx * panX[2] + dy * panY[2];
+    modelViewer.cameraTarget = `${target.x}m ${target.y}m ${target.z}m`;
+
+    // This pauses turntable rotation
+    modelViewer.dispatchEvent(new CustomEvent(
+          'camera-change', {detail: {source: 'user-interaction'}}));
+  };
+
+  const recenter = (pointer) => {
+    panning = false;
+    if (Math.abs(pointer.clientX - startX) > tapDistance ||
+        Math.abs(pointer.clientY - startY) > tapDistance)
+      return;
+    const rect = modelViewer.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    const hit = modelViewer.positionAndNormalFromPoint(x, y);
+    modelViewer.cameraTarget =
+        hit == null ? 'auto auto auto' : hit.position.toString();
+  };
+
+  const onPointerUp = (event) => {
+    const pointer = event.clientX ? event : event.changedTouches[0];
+    if (Math.abs(pointer.clientX - startX) < tapDistance &&
+        Math.abs(pointer.clientY - startY) < tapDistance) {
+      recenter(pointer);
+    }
+    panning = false;
+  };
+
+  modelViewer.addEventListener('mousedown', (event) => {
+    startX = event.clientX;
+    startY = event.clientY;
+    panning = event.button === 2 || event.ctrlKey || event.metaKey ||
+        event.shiftKey;
+    if (!panning)
+      return;
+
+    lastX = startX;
+    lastY = startY;
+    startPan();
+    event.stopPropagation();
+  }, true);
+
+  modelViewer.addEventListener('touchstart', (event) => {
+    startX = event.touches[0].clientX;
+    startY = event.touches[0].clientY;
+    panning = event.touches.length === 2;
+    if (!panning)
+      return;
+
+    const {touches} = event;
+    lastX = 0.5 * (touches[0].clientX + touches[1].clientX);
+    lastY = 0.5 * (touches[0].clientY + touches[1].clientY);
+    startPan();
+  }, true);
+
+  modelViewer.addEventListener('mousemove', (event) => {
+    if (!panning)
+      return;
+
+    movePan(event.clientX, event.clientY);
+    event.stopPropagation();
+  }, true);
+
+  modelViewer.addEventListener('touchmove', (event) => {
+    if (!panning || event.touches.length !== 2)
+      return;
+
+    const {touches} = event;
+    const thisX = 0.5 * (touches[0].clientX + touches[1].clientX);
+    const thisY = 0.5 * (touches[0].clientY + touches[1].clientY);
+    movePan(thisX, thisY);
+  }, true);
+
+  self.addEventListener('mouseup', (event) => {
+    recenter(event);
+  }, true);
+  
+  self.addEventListener('touchend', (event) => {
+    if (event.touches.length === 0) {
+      recenter(event.changedTouches[0]);
+    }
+  }, true);
+})();
+</script>
+      </div>
+
+
+  </div>
+
+  {% endblock body %}

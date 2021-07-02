@@ -4,12 +4,19 @@ import rasterio
 import pandas as pd
 import plotly.graph_objects as go
 import fiona
+import pickle
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+env_path = join(dirname(dirname(__file__)), '.env')
+load_dotenv(dotenv_path=env_path)
 
 
 class Location:
 
     def __init__(self, address, boundary=100):
         self.address = address
+        self.boundary = boundary
         pos = search_address_mapbox(address, boundary=boundary, as_dict=True)
         self.x = pos['x']
         self.y = pos['y']
@@ -17,6 +24,7 @@ class Location:
         self.xMax = pos['xMax']
         self.yMin = pos['yMin']
         self.yMax = pos['yMax']
+        self.address = pos['address']
 
     def find_files(self):
         bboxes = {key: rasterio.open(next(iter(DATAS[key].values()))).bounds for key in DATAS.keys()}
@@ -52,7 +60,7 @@ class Location:
         z_data = pd.DataFrame(self.CHM)
         z_data.index = list(range(int(self.yMax + 1), int(self.yMin), -1))
         z_data.columns = list(range(int(self.xMin), int(self.xMax + 1)))
-        z_data = z_data.applymap(lambda x: 0.5 if x < 1 else round(x, 1))
+        # z_data = z_data.applymap(lambda x: 0.5 if x < 1 else round(x, 1))
 
         fig = go.Figure(go.Surface(z=z_data.values, x=z_data.columns, y=z_data.index, opacity=1))
 
@@ -67,9 +75,11 @@ class Location:
                                  "zaxis": {'showspikes': False},
                                  "camera_eye": {"x": 0, "y": -0.5, "z": 0.5},
                                  "aspectratio": {"x": 1, "y": 1, "z": 0.1}})
-        # fig.write_html('./templates/map.html', full_html=False, include_plotlyjs='cdn')
+        fig.write_html(f'./templates/maps/{self.x}x{self.y}y{self.boundary}.html', full_html=False, include_plotlyjs='cdn')
+        with open(f'./templates/maps/{self.x}x{self.y}y{self.boundary}.htmlpickle', 'wb') as handle:
+            pickle.dump(hits, handle, protocol=pickle.HIGHEST_PROTOCOL)
         div = fig.to_html(full_html=False, include_plotlyjs='cdn')
-        return div
+        return div, hits
 
 
 if __name__ == '__main__':

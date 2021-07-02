@@ -2,14 +2,22 @@ from pyproj import Transformer
 import rasterio
 from rasterio.mask import mask
 from shapely.geometry import box
-from fiona.crs import from_epsg
 from matplotlib.colors import LightSource
 import geopandas as gpd
 import requests
 import json
 import plotly.express as px
 import os
-from becode3d.variables import DATAS  # MAPBOX_KEY
+from becode3d.variables import DATAS
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+env_path = join(dirname(dirname(__file__)), '.env')
+load_dotenv(dotenv_path=env_path)
+
+
+class ErrorRaised(Exception):
+    pass
 
 
 def lambert_to_wgs(x_lambert, y_lambert):
@@ -42,8 +50,13 @@ def search_address_mapbox(address, as_wgs=False, as_dict=False, boundary=100):
     url = "https://api.mapbox.com/geocoding/v5/mapbox.places/{address}.json?types=address&access_token={key}"
     r = requests.get(url.format(address=address, key=os.environ['MAPBOX_KEY']))
     if r.status_code != 200:
-        return 'NotFound'
+        raise ErrorRaised("Incorrect reply from Mapbox API")
     r = r.json()
+    if len(r['features']) == 0:
+        raise ErrorRaised("Address not found")
+    address = {'street': r['features'][0]['text'],
+               'postal_code': r['features'][0]['context'][0]['text'],
+               'city_name': r['features'][0]['context'][1]['text']}
     y, x = r['features'][0]['center']
     x, y = wgs_to_lambert(x, y)
     xMin, xMax = x - boundary, x + boundary
@@ -54,8 +67,9 @@ def search_address_mapbox(address, as_wgs=False, as_dict=False, boundary=100):
         yMin, yMax = lambert_to_wgs(yMin, yMax)
     if as_dict:
         return {'x': x, 'xMin': xMin, 'xMax': xMax,
-                'y': y, 'yMin': yMin, 'yMax': yMax}
-    return x, y, xMin, xMax, yMin, yMax
+                'y': y, 'yMin': yMin, 'yMax': yMax,
+                'address': address}
+    return x, y, xMin, xMax, yMin, yMax, address
 
 
 def is_in_bbox(x, y, bbox):
@@ -70,7 +84,7 @@ def find_files(xMin, xMax, yMin, yMax):
     for k, bbox in bboxes.items():
         if is_in_bbox(xMin, yMin, bbox) and is_in_bbox(xMax, yMax, bbox):
             return DATAS[k]
-    return 'File not found'
+    raise ErrorRaised("boundary not found in TIFF file.")
 
 
 def getFeatures(gdf):
@@ -80,7 +94,7 @@ def getFeatures(gdf):
 
 def subsetTif(xMin, xMax, yMin, yMax, in_tif):
     data = rasterio.open(in_tif)
-    geo = gpd.GeoDataFrame({'geometry': box(xMin, yMin, xMax, yMax)}, index=[0], crs=from_epsg(31370))
+    geo = gpd.GeoDataFrame({'geometry': box(xMin, yMin, xMax, yMax)}, index=[0], crs="EPSG:31370")
     out_img, _ = mask(dataset=data, shapes=getFeatures(geo), filled=False, crop=True)
     return out_img
 
