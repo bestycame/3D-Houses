@@ -13,6 +13,11 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Test env vars for python
+      run: python -c 'import os;print(os.environ)'
+      env:
+        MAPBOX_KEY: ${{ secrets.MAPBOX_KEY }} 
+        SECRET_KEY: ${{ secrets.SECRET_KEY }} 
     - name: MAKE CLEAN
       run:  make clean
     - name: MAKE INSTALL
