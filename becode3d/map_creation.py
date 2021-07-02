@@ -66,31 +66,30 @@ class Location:
         """ Smooth line of z"""
         z_data_1 = scipy.ndimage.filters.gaussian_filter(z_data.values, sigma)
 
-        fig = go.Figure(go.Surface(z=z_data_1, x=z_data.columns, y=z_data.index, opacity=1,cmin=-0,cmid=5,cmax=10,
-                                   colorscale= [[0, "darkblue"], [0.5, "yellow"], [1, "darkred"]]))
+        fig = go.Figure(go.Surface(z=z_data_1, x=z_data.columns, y=z_data.index, opacity=1, cmin=-0, cmid=5, cmax=10,
+                                   colorscale=[[0, "darkblue"], [0.5, "yellow"], [1, "darkred"]]))
 
-                 
         for feature in features:
-            fig.add_scatter3d(x=feature['X'], y=feature['Y'], z=[feature['H_MUR']]*len(feature['X']),
-                              mode='lines',showlegend=False,opacity=0.7,
+            fig.add_scatter3d(x=feature['X'], y=feature['Y'], z=[feature['H_MUR']] * len(feature['X']),
+                              mode='lines', showlegend=False, opacity=0.7,
                               line=dict(color="yellow", width=5),
                               surfaceaxis=1,
-                              visible= True,
-                             )
+                              visible=True,
+                              )
 
         fig.update_layout(
             title='address',
-            xaxis_range=[155.6,155.7],yaxis_range=[self.yMin,self.yMax],
+            xaxis_range=[155.6, 155.7], yaxis_range=[self.yMin, self.yMax],
             margin=dict(t=40, r=0, l=0, b=40),
-            scene = {"xaxis": {'showspikes': False},
-                     "yaxis": {'showspikes': False},
-                     "zaxis": {'showspikes': False},
-                     'camera_eye': {"x": 0, "y": -0.5, "z": 0.5},
-                     "aspectratio": {"x": 1, "y": 1, "z": 0.1}
-                    })
+            scene={"xaxis": {'showspikes': False},
+                   "yaxis": {'showspikes': False},
+                   "zaxis": {'showspikes': False},
+                   'camera_eye': {"x": 0, "y": -0.5, "z": 0.5},
+                   "aspectratio": {"x": 1, "y": 1, "z": 0.1}
+                   })
         fig.update_geos(fitbounds="locations", visible=False)
         fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-        fig.update_scenes(xaxis_range=(self.xMin,self.xMax),yaxis_range=(self.yMin,self.yMax))
+        fig.update_scenes(xaxis_range=(self.xMin, self.xMax), yaxis_range=(self.yMin, self.yMax))
         fig.write_html(f'./templates/maps/{self.x}x{self.y}y{self.boundary}.html', full_html=False, include_plotlyjs='cdn')
         with open(f'./templates/maps/{self.x}x{self.y}y{self.boundary}.htmlpickle', 'wb') as handle:
             pickle.dump(hits, handle, protocol=pickle.HIGHEST_PROTOCOL)
