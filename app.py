@@ -70,6 +70,7 @@ def display(searchterm='', range_value=''):
         instance.find_files()
         instance.create_chm()
         html_map, hits = instance.create_plotly_map()
+    print(hits)
     if json['found'] == False:
         flash('No results found, please try again.')
         return redirect('/start')

@@ -8,7 +8,7 @@ check_code:
 	@flake8 scripts/* becode3d/*.py --ignore=E501
 
 test:
-	@coverage run -m pytest tests/*.py
+	@coverage run -m pytest tests/*.py --exit-zero
 	@coverage report -m --include='./becode3d/*'
 
 
@@ -40,6 +40,3 @@ count_lines:
 	@find ./tests -name '*.py' -exec  wc -l {} \; | sort -n| awk \
         '{printf "%4s %s\n", $$1, $$2}{s+=$$0}END{print s}'
 	@echo ''
-
-run_api:
-	uvicorn api.fast:app
