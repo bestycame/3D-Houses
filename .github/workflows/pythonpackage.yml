@@ -17,8 +17,6 @@ jobs:
       run:  make clean
     - name: MAKE INSTALL
       run:  make install
-    - name: MAKE TEST
-      run:  make test
     - name: MAKE CHECK_CODE
       run:  make check_code
     strategy:
