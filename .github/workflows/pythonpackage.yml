@@ -17,7 +17,7 @@ jobs:
       env:
         MAPBOX_KEY: ${{ secrets.MAPBOX_KEY }} 
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        run: python -c 'import os;print(os.environ)'
+      run: python -c 'import os;print(os.environ)'
     - name: MAKE CLEAN
       run:  make clean
     - name: MAKE INSTALL
