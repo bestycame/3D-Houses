@@ -4,12 +4,14 @@ from flask_login import login_user, logout_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import pandas as pd
-import os
+from os import path, environ
 from becode3d.map_creation import Location
+from becode3d.variables import DATAS
+import pickle
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = '3d_houses_very_secret_key'
+app.config['SECRET_KEY'] = environ['SECRET_KEY']
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -47,30 +49,42 @@ def start():
 @app.route('/display_map')
 @login_required
 def display_map():
-    return render_template('display_map.html', title='Display Map', 
-        address=['Pont Roi Baudoin', '6000 Charleroi'], 
-        h2={'Area': '2128m²', 'Latitude': '12345', 'Longitude': '123456'})
+    flash('Kindly start with a search :)')
+    return redirect('/start')
 
 @app.route('/display_map', methods=['POST'])
-@app.route('/display_map/address=<searchterm>&boundary=<range_value>')
 @login_required
 def display(searchterm='', range_value=''):
     json = {'found': True}
     if request.method == 'POST':
         searchterm = request.form.get('searchterm')
         range_value = request.form.get('range_value')
-    
     instance = Location(searchterm, int(range_value))
-    instance.find_files()
-    instance.create_chm()
-    html_map = instance.create_plotly_map()
-
+    cached = f'./templates/maps/{instance.x}x{instance.y}y{instance.boundary}.html'
+    if path.exists(cached):
+        with open(cached) as file:
+            html_map = file.read()
+        with open(f'{cached}pickle', 'rb') as handle:
+            hits = pickle.load(handle)
+    else:
+        instance.find_files()
+        instance.create_chm()
+        html_map, hits = instance.create_plotly_map()
+    print(hits)
     if json['found'] == False:
         flash('No results found, please try again.')
         return redirect('/start')
     return render_template('display_map.html', title='Display Map', 
-        address=[searchterm, range_value], 
-        h2={'Area': '2128m²', 'Latitude': '12345', 'Longitude': '123456'}, html_map=html_map)
+        address=instance.address, h2={'Select a building': 'for infos'}, html_map=html_map, hits=hits, )
+
+
+@app.route('/display_3d')
+def display_3d():
+    address = {'street': 'Pont Roi Baudoin',
+               'postal_code': '6000',
+               'city_name': 'Charleroi'}
+    return render_template('display_3d.html', title='Display 3D Map', 
+        address=address, h2={'Select a building': 'for infos'})
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -125,5 +139,5 @@ def logout():
 
 
 if __name__ == '__main__':
-  port = int(os.environ.get('PORT', 5000))
+  port = int(environ.get('PORT', 5000))
   app.run(host = '0.0.0.0', port = port)

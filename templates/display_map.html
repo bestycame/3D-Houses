@@ -6,8 +6,8 @@
               No Results found for your search!
           </div>
           <div id="h1">
-            <h1>{{ address[0] }}</h1>
-            <p>{{ address[1] }}</p>
+            <h1>{{ address['street'] }}</h1>
+            <p>{{ address['postal_code']}}  {{address['city_name']}}</p>
           </div>
           <div id="h2" class="cards">
             {% for k, v in h2.items() %}
@@ -19,5 +19,13 @@
         </div>
       </div>
       {{ html_map | safe }}
+
   </div>
+
+<script type="text/javascript">
+    var features = JSON.parse('{{hits|tojson}}');
+    document.write(features[0]);
+</script>
+
+<script src="{{ url_for('static', filename='ajax.js') }}"></script>
   {% endblock body %}

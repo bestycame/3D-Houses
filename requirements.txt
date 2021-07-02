@@ -42,3 +42,4 @@ fiona
 shapely
 matplotlib
 geopandas
+scipy

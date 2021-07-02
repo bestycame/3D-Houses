@@ -70,6 +70,12 @@ html, body {
   align-items: stretch;
 }
 
+/*3Dcontainer*/
+model-viewer {
+  width: 1480px;
+  height: 800px;
+}
+
 .bodydata {
   width:325px;
   padding: 10px;

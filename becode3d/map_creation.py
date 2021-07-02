@@ -4,12 +4,20 @@ import rasterio
 import pandas as pd
 import plotly.graph_objects as go
 import fiona
+import pickle
+import scipy.ndimage
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+env_path = join(dirname(dirname(__file__)), '.env')
+load_dotenv(dotenv_path=env_path)
 
 
 class Location:
 
     def __init__(self, address, boundary=100):
         self.address = address
+        self.boundary = boundary
         pos = search_address_mapbox(address, boundary=boundary, as_dict=True)
         self.x = pos['x']
         self.y = pos['y']
@@ -17,6 +25,7 @@ class Location:
         self.xMax = pos['xMax']
         self.yMin = pos['yMin']
         self.yMax = pos['yMax']
+        self.address = pos['address']
 
     def find_files(self):
         bboxes = {key: rasterio.open(next(iter(DATAS[key].values()))).bounds for key in DATAS.keys()}
@@ -52,24 +61,41 @@ class Location:
         z_data = pd.DataFrame(self.CHM)
         z_data.index = list(range(int(self.yMax + 1), int(self.yMin), -1))
         z_data.columns = list(range(int(self.xMin), int(self.xMax + 1)))
-        z_data = z_data.applymap(lambda x: 0.5 if x < 1 else round(x, 1))
+        z_data = z_data.applymap(lambda x: 0 if x < 5 else round(x, 1))
+        sigma = [0.5, 0.5]
+        """ Smooth line of z"""
+        z_data_1 = scipy.ndimage.filters.gaussian_filter(z_data.values, sigma)
 
-        fig = go.Figure(go.Surface(z=z_data.values, x=z_data.columns, y=z_data.index, opacity=1))
+        fig = go.Figure(go.Surface(z=z_data_1, x=z_data.columns, y=z_data.index, opacity=1,cmin=-0,cmid=5,cmax=10,
+                                   colorscale= [[0, "darkblue"], [0.5, "yellow"], [1, "darkred"]]))
 
+                 
         for feature in features:
-            fig.add_scatter3d(x=feature['X'], y=feature['Y'], z=[3] * len(feature['X']),
-                              mode='lines', showlegend=False,
-                              line=dict(color='red', width=10))
+            fig.add_scatter3d(x=feature['X'], y=feature['Y'], z=[feature['H_MUR']]*len(feature['X']),
+                              mode='lines',showlegend=False,opacity=0.7,
+                              line=dict(color="yellow", width=5),
+                              surfaceaxis=1,
+                              visible= True,
+                             )
+
+        fig.update_layout(
+            title='address',
+            xaxis_range=[155.6,155.7],yaxis_range=[self.yMin,self.yMax],
+            margin=dict(t=40, r=0, l=0, b=40),
+            scene = {"xaxis": {'showspikes': False},
+                     "yaxis": {'showspikes': False},
+                     "zaxis": {'showspikes': False},
+                     'camera_eye': {"x": 0, "y": -0.5, "z": 0.5},
+                     "aspectratio": {"x": 1, "y": 1, "z": 0.1}
+                    })
         fig.update_geos(fitbounds="locations", visible=False)
-        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0},
-                          scene={"xaxis": {'showspikes': False},
-                                 "yaxis": {'showspikes': False},
-                                 "zaxis": {'showspikes': False},
-                                 "camera_eye": {"x": 0, "y": -0.5, "z": 0.5},
-                                 "aspectratio": {"x": 1, "y": 1, "z": 0.1}})
-        # fig.write_html('./templates/map.html', full_html=False, include_plotlyjs='cdn')
+        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+        fig.update_scenes(xaxis_range=(self.xMin,self.xMax),yaxis_range=(self.yMin,self.yMax))
+        fig.write_html(f'./templates/maps/{self.x}x{self.y}y{self.boundary}.html', full_html=False, include_plotlyjs='cdn')
+        with open(f'./templates/maps/{self.x}x{self.y}y{self.boundary}.htmlpickle', 'wb') as handle:
+            pickle.dump(hits, handle, protocol=pickle.HIGHEST_PROTOCOL)
         div = fig.to_html(full_html=False, include_plotlyjs='cdn')
-        return div
+        return div, features
 
 
 if __name__ == '__main__':
