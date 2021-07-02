@@ -65,15 +65,19 @@ def display(searchterm='', range_value=''):
         with open(cached) as file:
             html_map = file.read()
         with open(f'{cached}pickle', 'rb') as handle:
-            hits = pickle.load(handle)
+            features = pickle.load(handle)
     else:
         instance.find_files()
         instance.create_chm()
-        html_map, hits = instance.create_plotly_map()
-    print(hits)
+        html_map, features = instance.create_plotly_map()
     if json['found'] == False:
         flash('No results found, please try again.')
         return redirect('/start')
+    hits = []
+    for feature in features:
+        print(feature[1]['properties'])
+        hits.append({'Length': f"{round(feature[1]['properties']['SHAPE_Length'], 2)} M." ,
+                     'Area':   f"{round(feature[1]['properties']['SHAPE_Area'], 2)} m²"})
     return render_template('display_map.html', title='Display Map', 
         address=instance.address, h2={'Select a building': 'for infos'}, html_map=html_map, hits=hits, )
 
