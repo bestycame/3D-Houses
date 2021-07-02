@@ -12,5 +12,4 @@ setup(name='becode3d',
       install_requires=requirements,
       test_suite='tests',
       include_package_data=True,
-      scripts=['scripts/becode3d-run'],
       zip_safe=False)
