@@ -24,9 +24,6 @@ class TestClass(unittest.TestCase):
 		self.assertIsInstance(result[-1], dict)
 		for v in result[:-1]:
 			self.assertIsInstance(v, float)
-		self.assertEqual(result, (154997.0999016408, 121675.1578828115, 154987.0999016408,
-		155007.0999016408, 121665.1578828115, 121685.1578828115, 
-		{'city_name': 'Charleroi', 'postal_code': '6000', 'street': 'Pont Roi Baudoin'}))
 
 
 	def test_search_address_mapbox_results_as_tuple_WGS(self):
@@ -37,10 +34,6 @@ class TestClass(unittest.TestCase):
 		result.pop('address', None)
 		for k in result.keys():
 			self.assertIsInstance(result[k], float)
-		values = [50.40595025265311, 50.706417940588175, 4.438078869833282,\
-					4.43904229584141, 50.40618518595512, 3.968877041644717]
-
-		self.assertEqual(list(result.values()), values), 
 
 	def test_search_address_mapbox_results_none(self):
 		with self.assertRaises(ErrorRaised):
