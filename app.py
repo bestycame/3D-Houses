@@ -7,6 +7,7 @@ import pandas as pd
 from os import path, environ
 from becode3d.map_creation import Location
 from becode3d.variables import DATAS
+from becode3d.functions import lambert_to_wgs
 import pickle
 
 app = Flask(__name__)
@@ -75,20 +76,33 @@ def display(searchterm='', range_value=''):
         return redirect('/start')
     hits = []
     for feature in features:
-        print(feature[1]['properties'])
-        hits.append({'Length': f"{round(feature[1]['properties']['SHAPE_Length'], 2)} M." ,
-                     'Area':   f"{round(feature[1]['properties']['SHAPE_Area'], 2)} m²"})
-    return render_template('display_map.html', title='Display Map', 
-        address=instance.address, h2={'Select a building': 'for infos'}, html_map=html_map, hits=hits, )
+        try: 
+            hits.append({'Length': f"{round(feature[1]['properties']['SHAPE_Length'], 2)} m.",
+                         'Area':   f"{round(feature[1]['properties']['SHAPE_Area'], 2)} m.²",
+                         'Hauteur Toit': f"{round(feature[1]['properties']['E_TOIT'], 2)} m."})
+        except KeyError:
+            pass
+    return render_template('display_map.html', title=f'{len(features)}: Display Map', 
+        address=instance.address, h2={'Select a building': 'for infos 🏠'}, html_map=html_map, hits=hits, )
 
 
 @app.route('/display_3d')
+@login_required
 def display_3d():
     address = {'street': 'Pont Roi Baudoin',
                'postal_code': '6000',
                'city_name': 'Charleroi'}
     return render_template('display_3d.html', title='Display 3D Map', 
-        address=address, h2={'Select a building': 'for infos'})
+        address=address, h2={'Select a building': 'for infos 🏠'})
+
+@app.route('/display_3d2')
+@login_required
+def display_3d2():
+    address = {'street': "Rue D'atrive",
+               'postal_code': '4280',
+               'city_name': 'Avin'}
+    return render_template('display_3d2.html', title='Display 3D Map', 
+        address=address, h2={'Select a building': 'for infos 🏠'})
 
 
 @app.route('/login', methods=['GET', 'POST'])
