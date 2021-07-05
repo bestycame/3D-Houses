@@ -13,14 +13,14 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - env: 
-      MAPBOX_KEY: ${{ secrets.MAPBOX_KEY }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
     - name: MAKE CLEAN
       run:  make clean
     - name: MAKE INSTALL
       run:  make install
     - name: MAKE TEST
+      - env:
+        MAPBOX_KEY: ${{ secrets.MAPBOX_KEY }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run:  make test
     - name: MAKE CHECK_CODE
       run:  make check_code
