@@ -83,7 +83,7 @@ def display(searchterm='', range_value=''):
         except KeyError:
             pass
     return render_template('display_map.html', title=f'{len(features)}: Display Map', 
-        address=instance.address, h2={'Select a building': 'for infos'}, html_map=html_map, hits=hits, )
+        address=instance.address, h2={'Select a building': 'for infos 🏠'}, html_map=html_map, hits=hits, )
 
 
 @app.route('/display_3d')
@@ -93,7 +93,7 @@ def display_3d():
                'postal_code': '6000',
                'city_name': 'Charleroi'}
     return render_template('display_3d.html', title='Display 3D Map', 
-        address=address, h2={'Select a building': 'for infos'})
+        address=address, h2={'Select a building': 'for infos 🏠'})
 
 @app.route('/display_3d2')
 @login_required
@@ -102,7 +102,7 @@ def display_3d2():
                'postal_code': '4280',
                'city_name': 'Avin'}
     return render_template('display_3d2.html', title='Display 3D Map', 
-        address=address, h2={'Select a building': 'for infos'})
+        address=address, h2={'Select a building': 'for infos 🏠'})
 
 
 @app.route('/login', methods=['GET', 'POST'])
