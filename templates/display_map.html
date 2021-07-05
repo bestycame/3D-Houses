@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
   {% block body %}
+<script type="text/javascript">
+    var features = JSON.parse('{{hits|tojson}}');
+    document.write(features[0]);
+</script>
+
     <div class="bodycontainer">
       <div class=bodydata>
           <div class="alert alert-warning text_center" id=alert style="display:none">
@@ -21,11 +26,6 @@
       {{ html_map | safe }}
 
   </div>
-
-<script type="text/javascript">
-    var features = JSON.parse('{{hits|tojson}}');
-    document.write(features[0]);
-</script>
 
 <script src="{{ url_for('static', filename='ajax.js') }}"></script>
   {% endblock body %}
