@@ -18,7 +18,7 @@ jobs:
     - name: MAKE INSTALL
       run:  make install
     - name: MAKE TEST
-      - env:
+      env:
         MAPBOX_KEY: ${{ secrets.MAPBOX_KEY }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run:  make test
