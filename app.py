@@ -43,18 +43,18 @@ def index():
 
 
 @app.route('/start')
-@login_required
+# @login_required
 def start():
     return render_template('start.html', title='Start')
 
 @app.route('/display_map')
-@login_required
+# @login_required
 def display_map():
     flash('Kindly start with a search :)')
     return redirect('/start')
 
 @app.route('/display_map', methods=['POST'])
-@login_required
+# @login_required
 def display(searchterm='', range_value=''):
     json = {'found': True}
     if request.method == 'POST':
@@ -85,28 +85,9 @@ def display(searchterm='', range_value=''):
     return render_template('display_map.html', title=f'{len(features)}: Display Map', 
         address=instance.address, h2={'Select a building': 'for infos 🏠'}, html_map=html_map, hits=hits, )
 
-
-@app.route('/display_3d')
-@login_required
-def display_3d():
-    address = {'street': 'Pont Roi Baudoin',
-               'postal_code': '6000',
-               'city_name': 'Charleroi'}
-    return render_template('display_3d.html', title='Display 3D Map', 
-        address=address, h2={'Select a building': 'for infos 🏠'})
-
-@app.route('/display_3d2')
-@login_required
-def display_3d2():
-    address = {'street': "Rue D'atrive",
-               'postal_code': '4280',
-               'city_name': 'Avin'}
-    return render_template('display_3d2.html', title='Display 3D Map', 
-        address=address, h2={'Select a building': 'for infos 🏠'})
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    return redirect('/start') #LOGIN DEACTIVATED
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -121,14 +102,14 @@ def login():
         return render_template('login.html', title='Login')
 
 
+# @login_required
 @app.route('/signup')
-#@login_required
 def signup():
     return render_template('signup.html')
 
 
+# @login_required
 @app.route('/signup', methods=['POST'])
-#@login_required
 def signup_post():
 
     email = request.form.get('email')

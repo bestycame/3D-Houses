@@ -3,10 +3,8 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
   <ul class="navbar-nav mr-auto">
-      <li class="nav-item"><a class="nav-link" href="/display_3d">See it in 3D!</a></li>
-      <li><a class="nav-link" href="/display_3d2">🏠</a></li>
       <li class="nav-item dropdown">
-        <img class="avatar dropdown-toggle" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="https://avatars.githubusercontent.com/u/26960886?v=4">
+        <img class="avatar dropdown-toggle" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="{{ url_for('static', filename='cat.jpg') }}">
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="/logout">LogOut</a>
         </div>
