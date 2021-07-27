@@ -32,20 +32,6 @@ def wgs_to_lambert(x_wgs, y_wgs):
     return x_lambert, y_lambert
 
 
-def search_address(cp, rue, num, as_wgs=False, as_dict=False, boundary=False):
-    url = 'http://geoservices.wallonie.be/geolocalisation/rest/getPositionByCpRueAndNumero/{cp}/{rue}/{num}'
-    r = requests.get(url.format(cp=cp, rue=rue, num=num)).json()
-    x, y, xMin, xMax, yMin, yMax = r['x'], r['y'], r['rue']['xMin'], r['rue']['xMax'], r['rue']['yMin'], r['rue']['yMax']
-    if as_wgs:
-        x, y = lambert_to_wgs(x, y)
-        xMin, xMax = lambert_to_wgs(xMin, xMax)
-        yMin, yMax = lambert_to_wgs(yMin, yMax)
-    if as_dict:
-        return {'x': x, 'xMin': xMin, 'xMax': xMax,
-                'y': y, 'yMin': yMin, 'yMax': yMax}
-    return x, y, xMin, xMax, yMin, yMax
-
-
 def search_address_mapbox(address, as_wgs=False, as_dict=False, boundary=100):
     url = "https://api.mapbox.com/geocoding/v5/mapbox.places/{address}.json?types=address&access_token={key}"
     r = requests.get(url.format(address=address, key=os.environ['MAPBOX_KEY']))

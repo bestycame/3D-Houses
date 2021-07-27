@@ -8,6 +8,6 @@ DATAS = {'LGE': {'MNT': '/mnt/3D/RELIEF_WALLONIE_MNT_2013_2014_LIEGE.tif',
          #         'MNS': '/mnt/3D/RELIEF_WALLONIE_MNS_2013_2014_NAMUR.tif'},
          # 'BRA': {'MNT': '/mnt/3D/RELIEF_WALLONIE_MNT_2013_2014_BRABANT.tif',
          #         'MNS': '/mnt/3D/RELIEF_WALLONIE_MNS_2013_2014_BRABANT.tif'}
-                 }
+         }
 
 BATI_3D = '/mnt/3D/BATI3D_2013-2014.gdb'

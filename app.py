@@ -11,7 +11,6 @@ from becode3d.functions import lambert_to_wgs
 import pickle
 
 app = Flask(__name__)
-
 app.config['SECRET_KEY'] = environ['SECRET_KEY']
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -39,13 +38,20 @@ def load_user(user_id):
 def index():
     if current_user.is_authenticated:
         return redirect('/start')
-    return redirect('/login')
+    # Login Disabled, redirect to start
+    return redirect('/start')
 
 
 @app.route('/start')
 # @login_required
 def start():
+    flash('In order to save valuable disk space, only the province of Liège is covered.')
     return render_template('start.html', title='Start')
+
+@app.errorhandler(500)
+def address_not_found(e):
+    flash('Address NOT FOUND :)')
+    return redirect('/start')
 
 @app.route('/display_map')
 # @login_required
@@ -82,12 +88,12 @@ def display(searchterm='', range_value=''):
                          'Hauteur Toit': f"{round(feature[1]['properties']['E_TOIT'], 2)} m."})
         except KeyError:
             pass
+    print('TOTAL FEATURES LOADED', len(hits))
     return render_template('display_map.html', title=f'{len(features)}: Display Map', 
-        address=instance.address, h2={'Select a building': 'for infos 🏠'}, html_map=html_map, hits=hits, )
+        address=instance.address, h2={'Select the CONTOUR': 'for building infos 🏠'}, html_map=html_map, hits=hits, )
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    return redirect('/start') #LOGIN DEACTIVATED
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')

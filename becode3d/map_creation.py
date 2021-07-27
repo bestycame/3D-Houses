@@ -60,24 +60,18 @@ class Location:
         z_data = pd.DataFrame(self.CHM)
         z_data.index = list(range(int(self.yMax + 1), int(self.yMin), -1))
         z_data.columns = list(range(int(self.xMin), int(self.xMax + 1)))
-        z_data = z_data.applymap(lambda x: 0 if x < 1 else round(x, 1))
-        """ Smooth line of z"""
-        z_data_1 = scipy.ndimage.filters.gaussian_filter(z_data.values, [0.5, 0.5])
 
-        fig = go.Figure(go.Surface(z=z_data_1, x=z_data.columns, y=z_data.index,
-                        hovertemplate="lat/lon: %{y}/%{x}<br>hauteur: %{z}<extra></extra>", opacity=0.8, cmin=-0, cmid=7, cmax=15,
-                        colorscale=[[0, "#56B1E1"], [0.33, "#ffffff"], [0.66, "#48ffd5"], [1, "#0e2a47"]]))
+        fig = go.Figure(go.Surface(z=z_data, x=z_data.columns, y=z_data.index, hoverinfo='skip', cmin=-0, cmid=7, cmax=15))
+
         for feature in features:
-            fig.add_scatter3d(x=feature['X'], y=feature['Y'], z=[feature['H_MUR']] * len(feature['X']),
-                              mode='lines', showlegend=False, opacity=0.7,
-                              line=dict(color="yellow", width=7),
+            fig.add_scatter3d(x=feature['X'], y=feature['Y'], z=[5] * len(feature['X']),
+                              mode='lines', showlegend=False, opacity=0.7, hovertemplate="Building Found!<extra></extra>",
+                              line={'color':"red", 'width':7},
                               surfaceaxis=1, visible=True)
-        fig.add_scatter3d(x=[self.x], y=[self.y], z=[4], mode='markers', marker_symbol='diamond-open', marker=dict(size=5, color='red'), showlegend=False, hovertemplate="Building Found!")
-        fig.update_layout(xaxis_range=(self.xMin, self.xMax), yaxis_range=(self.yMin, self.yMax),
-                          margin={'r': 0, 't': 0, 'l': 0, 'b': 0},
+
+        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0},
                           scene={'camera_eye': {'x': 0, 'y': -0.5, 'z': 0.5},
                                  'aspectratio': {'x': 1, 'y': 1, 'z': 0.1}})
-        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
         fig.update_scenes(xaxis_range=(self.xMin, self.xMax), yaxis_range=(self.yMin, self.yMax))
 
         fig.write_html(f'./templates/maps/{self.x}x{self.y}y{self.boundary}.html', full_html=False, include_plotlyjs='cdn')
