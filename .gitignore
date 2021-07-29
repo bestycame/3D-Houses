@@ -127,8 +127,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-
-#PERSONNAL
-./BATI3D_2013-2014.gdb
-*BATI3D_2013-2014.gdb*

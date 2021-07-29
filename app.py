@@ -71,7 +71,7 @@ def display(searchterm='', range_value=''):
     if path.exists(cached):
         with open(cached) as file:
             html_map = file.read()
-        with open(f'{cached}pickle', 'rb') as handle:
+        with open(f'{cached[:-5]}.pickle', 'rb') as handle:
             features = pickle.load(handle)
     else:
         instance.find_files()
@@ -83,13 +83,12 @@ def display(searchterm='', range_value=''):
     hits = []
     for feature in features:
         try: 
-            hits.append({'Length': f"{round(feature[1]['properties']['SHAPE_Length'], 2)} m.",
-                         'Area':   f"{round(feature[1]['properties']['SHAPE_Area'], 2)} m.²",
-                         'Hauteur Toit': f"{round(feature[1]['properties']['E_TOIT'], 2)} m."})
+            hits.append({'Length': f"{round(feature['SHAPE_Length'], 2)} m.",
+                         'Area':   f"{round(feature['SHAPE_Area'], 2)} m.²",
+                         'Hauteur Toit': f"{round(feature['E_TOIT'], 2)} m."})
         except KeyError:
             pass
-    print('TOTAL FEATURES LOADED', len(hits))
-    return render_template('display_map.html', title=f'{len(features)}: Display Map', 
+    return render_template('display_map.html', title=f'Display Map', 
         address=instance.address, h2={'Select the CONTOUR': 'for building infos 🏠'}, html_map=html_map, hits=hits, )
 
 @app.route('/login', methods=['GET', 'POST'])

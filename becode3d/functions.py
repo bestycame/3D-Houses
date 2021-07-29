@@ -2,17 +2,15 @@ from pyproj import Transformer
 import rasterio
 from rasterio.mask import mask
 from shapely.geometry import box
-from matplotlib.colors import LightSource
 import geopandas as gpd
 import requests
 import json
-import plotly.express as px
 import os
 from becode3d.variables import DATAS
 from os.path import join, dirname
 from dotenv import load_dotenv
 
-env_path = join(dirname(dirname(__file__)), '.env')
+env_path = join(dirname(dirname(__file__)), ".env")
 load_dotenv(dotenv_path=env_path)
 
 
@@ -20,45 +18,78 @@ class ErrorRaised(Exception):
     pass
 
 
-def lambert_to_wgs(x_lambert, y_lambert):
+def lambert_to_wgs(x_lambert: float, y_lambert: float) -> (float, float):
+    """
+    This function transforms geographic coordinates from Lambert 1972 to WGS84.
+    """
     transformer = Transformer.from_crs("epsg:31370", "epsg:4326")
     x_wgs, y_wgs = transformer.transform(x_lambert, y_lambert)
     return x_wgs, y_wgs
 
 
-def wgs_to_lambert(x_wgs, y_wgs):
+def wgs_to_lambert(x_wgs: float, y_wgs: float) -> (float, float):
+    """
+    This function transforms geographic coordinates from WGS84 to Lambert 1972.
+    """
     transformer = Transformer.from_crs("epsg:4326", "epsg:31370")
     x_lambert, y_lambert = transformer.transform(x_wgs, y_wgs)
     return x_lambert, y_lambert
 
 
-def search_address_mapbox(address, as_wgs=False, as_dict=False, boundary=100):
-    url = "https://api.mapbox.com/geocoding/v5/mapbox.places/{address}.json?types=address&access_token={key}"
-    r = requests.get(url.format(address=address, key=os.environ['MAPBOX_KEY']))
+def search_address_mapbox(
+    address: str, as_wgs=False, as_dict=False, boundary=100
+) -> (float, float, float, float, float, float, dict):
+    """
+    This function will search the adress in MapBox to return it's coordinates
+    and bounding box in the adequate CRS.
+    Input: address(str): Address to lookup
+           as_wgs(Bool/False): return as L1972 coordinates, or WGS84
+           as_dict(Bool/False): returns either a tuple or a dict
+           boundary(int/100): controls the size of the bounding box
+    Output: x, y: Coordinates of the of the adress found
+            xMin, xMax, yMin, yMax(float): bounding box
+            address(dict):Details of the address found
+    """
+    url = "https://api.mapbox.com/geocoding/v5/mapbox.places/{address}.json?types=address&access_token={key}"  # noqa
+    r = requests.get(url.format(address=address, key=os.environ["MAPBOX_KEY"]))
     if r.status_code != 200:
         raise ErrorRaised("Incorrect reply from Mapbox API")
     r = r.json()
-    if len(r['features']) == 0:
+    if len(r["features"]) == 0:
         raise ErrorRaised("Address not found")
-    address = {'street': r['features'][0]['text'],
-               'postal_code': r['features'][0]['context'][0]['text'],
-               'city_name': r['features'][0]['context'][1]['text']}
-    y, x = r['features'][0]['center']
+    address = {
+        "street": r["features"][0]["text"],
+        "postal_code": r["features"][0]["context"][0]["text"],
+        "city_name": r["features"][0]["context"][1]["text"],
+    }
+    y, x = r["features"][0]["center"]
+    # Lambert are easier to add a metered value to the coordinates
     x, y = wgs_to_lambert(x, y)
     xMin, xMax = x - boundary, x + boundary
     yMin, yMax = y - boundary, y + boundary
+    # transforms to the correct CRS if required
     if as_wgs:
         x, y = lambert_to_wgs(x, y)
         xMin, xMax = lambert_to_wgs(xMin, xMax)
         yMin, yMax = lambert_to_wgs(yMin, yMax)
+    # returns the data as a dict instead of a tuple
     if as_dict:
-        return {'x': x, 'xMin': xMin, 'xMax': xMax,
-                'y': y, 'yMin': yMin, 'yMax': yMax,
-                'address': address}
+        return {
+            "x": x,
+            "xMin": xMin,
+            "xMax": xMax,
+            "y": y,
+            "yMin": yMin,
+            "yMax": yMax,
+            "address": address,
+        }
     return x, y, xMin, xMax, yMin, yMax, address
 
 
 def is_in_bbox(x, y, bbox):
+    """
+    Answers True or Folse if the x, y is inside the BBOX.
+    """
     xMin, yMin, xMax, yMax = bbox
     if xMin <= x <= xMax and yMin <= y <= yMax:
         return True
@@ -66,7 +97,13 @@ def is_in_bbox(x, y, bbox):
 
 
 def find_files(xMin, xMax, yMin, yMax):
-    bboxes = {key: rasterio.open(next(iter(DATAS[key].values()))).bounds for key in DATAS.keys()}
+    """
+    Will find in wich MNS/MNT file the BBOX is.
+    """
+    bboxes = {
+        key: rasterio.open(next(iter(DATAS[key].values()))).bounds
+        for key in DATAS.keys()
+    }
     for k, bbox in bboxes.items():
         if is_in_bbox(xMin, yMin, bbox) and is_in_bbox(xMax, yMax, bbox):
             return DATAS[k]
@@ -74,33 +111,22 @@ def find_files(xMin, xMax, yMin, yMax):
 
 
 def getFeatures(gdf):
-    """Function to parse features from GeoDataFrame in such a manner that rasterio wants them"""
-    return [json.loads(gdf.to_json())['features'][0]['geometry']]
+    """
+    Function to parse features from GeoDataFrame
+    in such a manner that rasterio wants them
+    """
+    return [json.loads(gdf.to_json())["features"][0]["geometry"]]
 
 
 def subsetTif(xMin, xMax, yMin, yMax, in_tif):
+    """
+    Crops a the in_tif on the bounding box and returns an out_tif
+    """
     data = rasterio.open(in_tif)
-    geo = gpd.GeoDataFrame({'geometry': box(xMin, yMin, xMax, yMax)}, index=[0], crs="EPSG:31370")
-    out_img, _ = mask(dataset=data, shapes=getFeatures(geo), filled=False, crop=True)
-    return out_img
-
-
-def show_tif(tif, title=None, hillshade=False):
-    if title is None:
-        title = tif
-    colors = [[0.0, 'rgb(000, 063, 076)'], [0.1, 'rgb(029, 081, 059)'], [0.2, 'rgb(055, 098, 043)'],
-              [0.3, 'rgb(079, 114, 030)'], [0.4, 'rgb(103, 129, 016)'], [0.5, 'rgb(136, 142, 002)'],
-              [0.6, 'rgb(169, 154, 021)'], [0.7, 'rgb(192, 171, 045)'], [0.8, 'rgb(214, 188, 074)'],
-              [0.9, 'rgb(234, 209, 112)'], [1.0, 'rgb(254, 229, 152)']]
-
-    with rasterio.open(tif) as src:
-        data = src.read(1)
-
-    if hillshade:
-        light = LightSource(azdeg=315, altdeg=45)
-        data = light.hillshade(data, vert_exag=1)
-
-    fig = px.imshow(data, color_continuous_scale=colors)
-    fig.update_traces(customdata=data, hovertemplate='elevation: %{customdata:.4f}')
-    fig.update_layout(**dict(title_text=title, width=700, height=500, template='none'))
-    return fig
+    geo = gpd.GeoDataFrame(
+        {"geometry": box(xMin, yMin, xMax, yMax)}, index=[0], crs="EPSG:31370"
+    )
+    out_tif, _ = mask(
+        dataset=data, shapes=getFeatures(geo), filled=False, crop=True
+    )
+    return out_tif
