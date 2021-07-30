@@ -1,127 +1,37 @@
 # 3D House Project
+## Project Access
+The project can be found in my [portfolio](https://3d.olivier.dotreppe.be/start)
 
-- Repository: `3D_houses`
-- Type of Challenge: `Learning & Consolidation`
-- Duration: `2 weeks`
-- Deadline: `02/07/21 17:00 AM`
-- Deployment strategy :
-  - GitHub page
-  - PowerPoint
-  - Jupyter Notebook
-  - Webpage
-  - App
-- Team challenge : `Team`
+## Tech used
+- Python, Rasterio, Pandas, Plotly.
+- Coded in a Class and as a Python Package
+- Showcased in a Flask powered website:
+  - Coded in HTML/CSS, with Bootstrap. The login function has now been deactivated.
+  - an AJAX script allows to select and display information about the buildings
+  - Initially a CI/CD was configured to check and pushing to Heroku.  The checks included Flake8 as a linter, and some unittest.
+  - Now the docker image runs on a Debian powered VPS running Nginx.
+- a quick and dirty cache system is in place as 
+- Contained in a Docker Image
 
-## Mission objectives
+## The Data: DSM and DTMs to get CHM's!
+The ressources have been found on the Geoportal of the public service of Wallonia's (SPW) website.
+You can download them here: 
+ - [Digital Terrain Model (DTM)](http://geoportail.wallonie.be/catalogue/7d23d8ab-962a-493f-8771-2054e06ad36f.html)
+ - [Digital Surface Model (DSM)](http://geoportail.wallonie.be/catalogue/6029e738-f828-438b-b10a-85e67f77af92.html)
+ - [Bâtiments 3D 2013-2014](https://geoportail.wallonie.be/catalogue/4de94d5d-9036-4953-beca-3ff76e4b1ec8.html)
+DSM, DTM and Canopy height model (CHM) are three important terms in this project!:
+  
+  
+<img align="center" src="https://i.stack.imgur.com/1l3EA.png" />
 
-Consolidate the knowledge in Python, specifically in :
+## How does it works?
+- it all starts with an address that we want to work from, let's take my school's address!
+"1 Rue de Crehen Hannut" and the area we want to plot around (let's take boundary=200m!)
+- search_address_mapbox(): will call mapbox's API to return the coordinates of the adress: (X, Y). it will add the boundary around that point to obtain a bounding box that we will plot (xMin, xMax, yMin, yMax)
+- find_files(): it will loop through each MNS/MNT file to check if the bounding box fits within.
+- create_chm(): it will first crop the MNS and MNT Tiff files to the correct size, and create the CHM by substracting them.
+- create_plotly_map(): will create the map based on the CHM and save it to HTML
 
-- NumPy
-- Pandas
-- Matplotlib
-
-## Learning Objectives
-
-- to be able to search and implement new libraries
-- to be able to read and use the [shapefile](https://en.wikipedia.org/wiki/Shapefile) format
-- to be able to read and use geoTIFFs
-- to be able to render a 3D plot
-- to be able to present a final product
-
-## The Mission
-
-> We are _LIDAR PLANES_, active in the Geospatial industry. We would like to use our data to launch a new branch in the insurance business. So, we need you to build a solution with our data to model a house in 3D with only a home address.
-
-### Must-have features
-
-- 3D lookup of houses.
-
-### Nice-to-have features
-
-- Optimize your solution to have the result as fast as possible.
-- Features like the living area of the house in m², how many floors, if there is a pool, the vegetation in the neighborhood, etc...
-- Better visualization.
-
-### Miscellaneous information
-
-#### What is LIDAR ?
-
-LIDAR is a method to measure distance using light. The device will illuminate a target with a laser light and a sensor will measure the reflection. Differences in wavelength and return times will be used to get 3D representations of an area.
-
-Here is a LIDAR segmentation :
-
-![Lidar Segmentation](lidar_seg.png)
-
-With those points clouds we can easily identify houses, vegetation, roads, etc...
-
-The results we're interested in are DSM (Digital Surface Map) and DTM (Digital Terrain Map).
-
-Which are already computed and available here :
-
-- [DSM](http://www.geopunt.be/download?container=dhm-vlaanderen-ii-dsm-raster-1m&title=Digitaal%20Hoogtemodel%20Vlaanderen%20II,%20DSM,%20raster,%201m)
-- [DTM](http://www.geopunt.be/download?container=dhm-vlaanderen-ii-dtm-raster-1m&title=Digitaal%20Hoogtemodel%20Vlaanderen%20II,%20DTM,%20raster,%201m)
-
-## Deliverables
-
-1. Publish your source code on the GitHub repository.
-2. Pimp up the README file:
-   - Description
-   - Installation
-   - Usage
-   - (Visuals)
-   - (Contributors)
-   - (Timeline)
-   - (Personal situation)
-3. Show us your results in a nice presentation.
-4. Show us a live demo.
-
-### Steps
-
-1. Create the repository
-2. Study the request (What & Why ?)
-3. Download the maps
-4. Identify technical challenges (How ?)
-
-## Evaluation criteria
-
-| Criteria       | Indicator                                                                   | Yes/No |
-| -------------- | --------------------------------------------------------------------------- | ------ |
-| 1. Is complete | There are no warnings/errors in the console.                                |        |
-|                | You push your changes to GitHub at least once a day.                        |        |
-|                | There is a visualization available for one house.                           |        |
-| 2. Is great    | One can select an address and have the building at that address visualized. |        |
-
-## A final note of encouragement
-
-![You've got this!](https://media.giphy.com/media/yoJC2K6rCzwNY2EngA/giphy.gif)
-
-
-## Team 
-
-### Team 1
-Olivier
-Sergei
-Samuel
-
-### Team 2
-Julien
-Han
-Sacha 
-Jessica
-
-### Team 3
-Yolann
-Quentin
-Jeremy
-Pierre
-
-### Team 4
-Jeff
-Clément
-Venkata
-Samir
-
-### Team 5
-Nathanael
-Ke Thien
-Marvine
+## ToDo?
+- Improve the speed!
+- I'm not happy either on how the cache is managed.
