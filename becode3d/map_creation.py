@@ -27,7 +27,8 @@ class Location:
 
     def find_files(self):
         """
-        This function will look for
+        This function will return to correct MNS/MNT TIFF file
+        for the province where the address is located
         """
         bboxes = {
             key: rasterio.open(next(iter(DATAS[key].values()))).bounds
@@ -43,6 +44,9 @@ class Location:
         return "File not found"
 
     def create_chm(self):
+        '''
+        This function will create the CHM based on the MNS and MNT tiff files
+        '''
         MNS = subsetTif(
             self.xMin, self.xMax, self.yMin, self.yMax, self.MNS_prov
         ).data
@@ -52,6 +56,11 @@ class Location:
         self.CHM = (MNS - MNT)[0, :, :]
 
     def create_plotly_map(self):
+        '''
+        This function will plot the CHM on a Plotly Suface 3D plot,
+        extract the buildings and features from the BATI_3D GDB file.
+        It will save the data as an instance and to a html+picker for a small cache system.
+        '''
         gdb = fiona.open(BATI_3D, layer=0)
         hits = list(
             gdb.items(bbox=(self.xMin, self.yMin, self.xMax, self.yMax))
@@ -135,7 +144,7 @@ class Location:
 
 
 if __name__ == "__main__":
-    instance = Location("Pont Roi Baudoin Charleroi", boundary=100)
+    instance = Location("1 Rue de Crehen Hannut", boundary=100)
     instance.find_files()
     instance.create_chm()
     instance.create_plotly_map()

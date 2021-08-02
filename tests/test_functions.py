@@ -17,7 +17,7 @@ class TestClass(unittest.TestCase):
 
 
 	def test_search_address_mapbox_results_as_tuple_L72(self):
-		address = "Pont Roi Baudoin, 6000 Charleroi"
+		address = "1 Rue de Crehen Hannut"
 		result = search_address_mapbox(address, boundary=10)
 		self.assertIsInstance(result, tuple)
 		self.assertEqual(7, len(result))
@@ -27,7 +27,7 @@ class TestClass(unittest.TestCase):
 
 
 	def test_search_address_mapbox_results_as_tuple_WGS(self):
-		address = "Pont Roi Baudoin, 6000 Charleroi"
+		address = "1 Rue de Crehen Hannut"
 		result = search_address_mapbox(address, as_dict=True, as_wgs=True)
 		self.assertIsInstance(result, dict)
 		self.assertIsInstance(result['address'], dict)
