@@ -9,7 +9,7 @@ import pickle
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = environ["SECRET_KEY"]
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///static/database.sqlite"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy()
