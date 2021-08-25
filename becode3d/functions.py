@@ -9,7 +9,7 @@ import os
 from becode3d.variables import DATAS
 from os.path import join, dirname
 from dotenv import load_dotenv
-
+from typing import Union
 env_path = join(dirname(dirname(__file__)), ".env")
 load_dotenv(dotenv_path=env_path)
 
@@ -18,7 +18,7 @@ class ErrorRaised(Exception):
     pass
 
 
-def lambert_to_wgs(x_lambert: float, y_lambert: float) -> (float, float):
+def lambert_to_wgs(x_lambert: float, y_lambert: float) -> Union[float, float]:
     """
     This function transforms geographic coordinates from Lambert 1972 to WGS84.
     """
@@ -27,7 +27,7 @@ def lambert_to_wgs(x_lambert: float, y_lambert: float) -> (float, float):
     return x_wgs, y_wgs
 
 
-def wgs_to_lambert(x_wgs: float, y_wgs: float) -> (float, float):
+def wgs_to_lambert(x_wgs: float, y_wgs: float) -> Union[float, float]:
     """
     This function transforms geographic coordinates from WGS84 to Lambert 1972.
     """
@@ -38,7 +38,7 @@ def wgs_to_lambert(x_wgs: float, y_wgs: float) -> (float, float):
 
 def search_address_mapbox(
     address: str, as_wgs=False, as_dict=False, boundary=100
-) -> (float, float, float, float, float, float, dict):
+) -> Union[float, float, float, float, float, float, dict]:
     """
     This function will search the adress in MapBox to return it's coordinates
     and bounding box in the adequate CRS.
